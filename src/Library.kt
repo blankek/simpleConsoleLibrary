@@ -33,7 +33,7 @@ class Library {
             println("Введите название книги")
             return
         }
-        var result = booksList.filter{it.name.contains(query, ignoreCase = true)}
+        val result = booksList.filter{it.name.contains(query, ignoreCase = true)}
         if(result.isEmpty()){ println("Ничего не найдено"); return}
         for (book in booksList){
             val status = if(borrowed.containsKey(book.id)){
