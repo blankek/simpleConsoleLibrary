@@ -1,7 +1,6 @@
 fun main() {
     val library = Library()
-    while(true){
-        println("""
+    val text: String = """
             Выберите действие:
             1) Добавить книгу
             2) Добавить автора
@@ -10,8 +9,11 @@ fun main() {
             5) Вернуть книгу
             6) Показать все книги
             7) Показать всех читателей
+            8) Показать книги и читателей
             0) Выход
-        """.trimIndent())
+        """.trimIndent()
+    while(true){
+        println(text)
         when(readLine()?.trim()){
             "1" -> {
                 println("Введите название книги")
@@ -42,6 +44,9 @@ fun main() {
             }
             "7" -> {
                 library.showAllReader()
+            }
+            "8" -> {
+                library.showBooksAndReaders()
             }
             "0" -> {
                 return

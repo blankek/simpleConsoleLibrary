@@ -1,20 +1,20 @@
 class Library {
-    var booksList: MutableList<Book> = mutableListOf()
-    val readersList: MutableList<Reader> = mutableListOf()
+    private var booksList: MutableList<Book> = mutableListOf()
+    private val readersList: MutableList<Reader> = mutableListOf()
 
-    val borrowed = mutableMapOf<Int, Int>()
+    private val borrowed = mutableMapOf<Int, Int>()
 
     private var nextBookId = 1
     private var nextReaderId = 1
 
-    fun addBook(book: String?){
-        val bookName = book?.trim()
+    fun addBook(bookNameInput: String?){
+        val bookName = bookNameInput?.trim()
         if (bookName.isNullOrEmpty()){
             println("Введите название книги")
             return
         }
         booksList.add(Book(nextBookId++, bookName))
-        println(bookName + " добавлена")
+        println("$bookName добавлена")
     }
 
     fun addReader(readerNameInput: String?){
@@ -24,7 +24,7 @@ class Library {
             return
         }
         readersList.add(Reader(nextReaderId++, readerName))
-        println(readerName + " добавлен")
+        println("$readerName добавлен")
     }
 
     fun findBook(bookNameInput: String?){
@@ -73,6 +73,41 @@ class Library {
         println("книга $name возвращена в библиотеку")
     }
 
+    fun showBooksAndReaders(){
+        val bookLines = booksList.map { book ->
+            val status = borrowed[book.id]?.let { readerId ->
+                val readerName = readersList.find { it.id == readerId }?.name ?: "неизвестен"
+                "выдана ($readerName, id=$readerId)"
+            } ?: "в наличии"
+            "[${book.id}] ${book.name} — $status"
+        }
+
+        val readerLines = readersList.map { reader -> "[${reader.id}] ${reader.name}" }
+
+        val leftWidth = (bookLines.maxOfOrNull { it.length } ?: 0) + 2
+        val sep = " | "
+
+        val rows = maxOf(bookLines.size, readerLines.size)
+
+        val leftHeader = "Книги"
+        val rightHeader = "Читатели"
+        println(leftHeader.padEnd(leftWidth) + sep + rightHeader)
+
+        val totalRightWidth = rightHeader.length
+        println("-".repeat(leftWidth) + "-".repeat(sep.length) + "-".repeat(totalRightWidth))
+
+        for (i in 0 until rows) {
+            val left = if (i < bookLines.size) {
+                val s = bookLines[i]
+                if (s.length > leftWidth - 1) s.substring(0, leftWidth - 4) + "..." else s
+            } else ""
+            val right = if (i < readerLines.size) readerLines[i] else ""
+            println(left.padEnd(leftWidth) + sep + right)
+        }
+        println("Нажмите Enter для продолжения...")
+        readLine()
+    }
+
     fun showAllBooks(){
         if (booksList.isEmpty()) { println("библиотека пуста"); return}
         println("Все книги")
@@ -86,6 +121,8 @@ class Library {
             }
             println(" [${book.id}] ${book.name} - $status")
         }
+        println("Нажмите Enter для продолжения...")
+        readLine()
     }
 
     fun showAllReader(){
@@ -94,6 +131,8 @@ class Library {
         for (reader in readersList){
             println(" [${reader.id}] ${reader.name}")
         }
+        println("Нажмите Enter для продолжения...")
+        readLine()
     }
 
 }
